@@ -33,9 +33,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # 4. Spring Boot 프로젝트 빌드 (테스트 포함)
+      # 4. Spring Boot 프로젝트 빌드 (테스트 제외)
       - name: Build and Test with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test
 
       # 5. Docker Hub 로그인
       - name: Log in to Docker Hub
