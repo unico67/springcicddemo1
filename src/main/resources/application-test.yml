@@ -3,6 +3,8 @@
 
 spring:
   datasource:
-    url: jdbc:tc:mysql:8.0:///edudb
-    username: jdbctest
-    password: jdbctest
+    url: jdbc:tc:mysql:8.0:///testdb
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
