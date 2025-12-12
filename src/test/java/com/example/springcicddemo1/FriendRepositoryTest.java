@@ -17,16 +17,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 public class FriendRepositoryTest {
     @Autowired
     private FriendRepository fr;
-
-    @Container
-    static MySQLContainer<?> mysql =
-            new MySQLContainer<>("mysql:8.0");
 
     @Test
     @Rollback(false)
