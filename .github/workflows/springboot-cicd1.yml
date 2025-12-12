@@ -1,0 +1,70 @@
+name: Spring Boot Build and Docker Push to Hub
+
+on:
+  push:
+    branches: [ main ] # main 브랜치에 푸시가 발생할 때 이 워크플로우를 실행합니다.
+
+env:
+  # Docker Hub 계정 정보 (GitHub Secrets에 저장된 값을 사용)
+  DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  # 최종 도커 이미지 이름 (Docker Hub 저장소 경로: unico67/cicdtest1)
+  IMAGE_NAME: unico67/cicdtest1 # <--- 이 부분이 수정되었습니다.
+  # Spring Boot 프로젝트의 JAR 파일 이름 (Dockerfile의 ARG와 일치)
+  JAR_NAME: springcicddemo1.jar
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 리포지토리 코드 체크아웃 (Actions V4 사용)
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. JDK 21 설정 (Dockerfile의 openjdk에 맞춰 distribution 변경)
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt' # <--- distribution이 'adopt' 등으로 변경되었습니다.
+          cache: 'gradle'
+
+      # 3. Gradle Wrapper 실행 권한 부여
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 4. Spring Boot 프로젝트 빌드 (테스트 포함)
+      - name: Build and Test with Gradle
+        run: ./gradlew clean build
+
+      # 5. Docker Hub 로그인
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 6. Docker 이미지의 태그 설정 및 Buildx 설정
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata (tags) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=,suffix=,enable=true # 커밋 SHA 기반 태그
+            type=raw,value=latest # latest 태그
+
+      # 7. Docker 이미지 빌드 및 Docker Hub에 푸시
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            JAR_FILE=build/libs/${{ env.JAR_NAME }}
