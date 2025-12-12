@@ -32,22 +32,22 @@ services:
       - mysql_data:/var/lib/mysql
 
   # 2. Spring Boot 애플리케이션 서비스
-  #app:
-   # image: unico67/cicdtest1:latest
-   # container_name: spring-boot-app
+  app:
+    image: unico67/cicdtest1:latest
+    container_name: spring-boot-app
 
-   # environment:
-     # SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/edudb
-     # SPRING_DATASOURCE_USERNAME: jdbctest
-     # SPRING_DATASOURCE_PASSWORD: jdbctest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/edudb
+      SPRING_DATASOURCE_USERNAME: jdbctest
+      SPRING_DATASOURCE_PASSWORD: jdbctest
 
-    #ports:
-      #- "8888:8888"
+    ports:
+      - "8888:8888"
 
     # 'db' 서비스가 완전히 실행된 후 'app' 서비스가 시작되도록 보장
-    #depends_on:
-      #db:
-        #condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
 
 # 데이터 영속성을 위한 볼륨 정의
 volumes:
