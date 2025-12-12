@@ -2,7 +2,7 @@ name: Spring Boot Build and Docker Push to Hub and Deploy to EC2
 
 on:
   push:
-    branches: [ main ] # main 브랜치에 푸시가 발생할 때 이 워크플로우를 실행합니다.
+    branches: [ main ]
 
 env:
   # Docker Hub 계정 정보 (GitHub Secrets에 저장된 값을 사용)
