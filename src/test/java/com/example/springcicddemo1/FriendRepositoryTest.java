@@ -11,17 +11,29 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest
 public class FriendRepositoryTest {
     @Autowired
     private FriendRepository fr;
+
+    @Container
+    static MySQLContainer<?> mysql =
+            new MySQLContainer<>("mysql:8.0")
+                    .withDatabaseName("edudb")
+                    .withUsername("jdbctest")
+                    .withPassword("jdbctest");
+
     @Test
     @Rollback(false)
     @Transactional
