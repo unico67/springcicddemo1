@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.DayOfWeek;
@@ -33,5 +34,16 @@ public class HomeController {
     public ResponseEntity<List<Friend>> friends() {
         ResponseEntity<List<Friend>> entity = new ResponseEntity<>(service.friendList(), HttpStatus.OK);
         return entity;
+    }
+    @GetMapping("/inputfriends")
+    public String input_friends() {
+        if(service.inputData())
+            return "데이터 삽입에 성공했어요.";
+        else
+            return "데이터 삽입에 실패했어요.";
+    }
+    @GetMapping("/add")
+    public int addOfTwoNumber(@RequestParam int num1, @RequestParam int num2 ) {
+        return num1+num2;
     }
 }
